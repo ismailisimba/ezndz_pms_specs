@@ -4,15 +4,35 @@
 
 EZNDZ (Easy Bananas) is a comprehensive web-based platform designed to manage and monitor agricultural projects. It facilitates the end-to-end lifecycle of project management, including task tracking, file storage, contract generation and signing, dynamic form responses, and key performance indicator (KPI) monitoring.
 
-## Features
+## Features & How They Work
 
-- **Project & Activity Management:** Track project milestones, activities, and KPIs to ensure agricultural projects stay on track.
-- **User & Access Management:** Role-based access control with secure authentication via JWT. Supports invite-based onboarding.
-- **Contract & Form Handling:** Dynamically handle form submissions and generate/sign PDF contracts.
-- **Cloud File Storage:** Integration with Cloudflare R2 (S3-compatible) for secure, scalable file uploads and pre-signed URL downloads.
-- **AI Integration:** Leverages Google Generative AI for intelligent data processing or assistance within the platform.
-- **Email Notifications:** Uses a custom Google Apps Script webhook to deliver automated system emails.
-- **Responsive Web Interface:** Lightweight vanilla HTML/JS/CSS frontend built for speed, complete with Service Worker caching.
+### 1. Project & Activity Management
+- **Projects**: The core entity. Administrators can set up agricultural projects and define their overarching goals.
+- **Activities & KPIs**: Projects are broken down into measurable activities and milestones. Key Performance Indicators (KPIs) are tracked against these activities to ensure agricultural projects stay on track and meet their funding obligations.
+
+### 2. User & Access Management
+- **Role-Based Access Control (RBAC)**: Secure authentication via JWT (JSON Web Tokens). Supports distinct roles such as Project Managers, Employees, and external Vendors.
+- **Onboarding**: Supports an invite-based onboarding process where users receive a secure token via email to set up their accounts.
+
+### 3. Contract Generation & Signing Workflow
+- **Dynamic PDF Generation**: Automatically generates printable PDF contracts using `pdfkit` based on predefined data (vendor details, scope of work, deliverables, payment terms).
+- **Approval Workflow**: Contracts go through a structured lifecycle (Draft ➔ Pending Approval ➔ Approved ➔ Executed). Project Managers review and approve contracts before signing.
+- **Digital & Manual Signatures**: 
+  - **Digital**: Vendors and representatives can sign directly via a secure public link. Signatures are drawn on an HTML canvas, saved as PNGs, and embedded into the final PDF.
+  - **Manual/Scanned**: Physical signed contracts can be uploaded. The platform uses Google Generative AI (Gemini) to extract images of the pages, intelligently detect the bounding boxes of the physical signatures, crop them, and map them to the document automatically.
+
+### 4. Dynamic Forms & Data Collection
+- **Form Builder**: Admins can build custom forms with various field types (text, textarea, checkbox, signature, rating, and GPS coordinates).
+- **Public Links & Offline Support**: Forms can be shared via public URLs (with rate-limiting) for unauthenticated respondents (e.g., field agents or farmers). Supports offline submissions that sync when connectivity is restored.
+- **AI-Powered Form Ingestion**: Similar to contracts, scanned physical forms can be uploaded. The Gemini API parses the scanned images, extracts the handwritten or printed data, crops signatures, and populates the digital form responses automatically.
+- **Printable PDFs**: The platform can generate blank, structured, and printable PDF versions of any form for field distribution.
+
+### 5. Cloud File Storage
+- **Cloudflare R2 Integration**: Fully integrated with Cloudflare R2 (S3-compatible) using the AWS S3 SDK.
+- **Secure Access**: All uploaded files (contract attachments, form evidence, signature PNGs) are stored securely. The platform generates temporary pre-signed URLs to grant secure access for downloading and viewing.
+
+### 6. Automated Email Notifications
+- **Google Apps Script Webhook**: Uses a custom Google Apps Script endpoint to bypass traditional SMTP limits and complexities. It delivers automated system emails such as contract approval requests, form submission receipts, and user invitations.
 
 ## Tech Stack
 
